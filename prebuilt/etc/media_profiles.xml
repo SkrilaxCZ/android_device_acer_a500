@@ -19,12 +19,10 @@
                          VideoEncoderCap+,
                          AudioEncoderCap+,
                          VideoDecoderCap,
-                         AudioDecoderCap,
-                         VideoEditorCap,
-                         ExportVideoProfile+)>
+                         AudioDecoderCap)>
   <!ELEMENT CamcorderProfiles (EncoderProfile+, ImageEncoding+, ImageDecoding, Camera)>
   <!ELEMENT EncoderProfile (Video, Audio)>
-  <!ATTLIST EncoderProfile quality (timelapse1080p|timelapse720p|timelapse480p|timelapsehigh|timelapselow|480p|qcif|high|low|1080p) #REQUIRED>
+  <!ATTLIST EncoderProfile quality (timelapse1080p|timelapse720p|timelapse480p|timelapsehigh|timelapselow|480p|qcif|high|low) #REQUIRED>
   <!ATTLIST EncoderProfile fileFormat (mp4|3gp) #REQUIRED>
   <!ATTLIST EncoderProfile duration (30|60) #REQUIRED>
   <!ELEMENT Video EMPTY>
@@ -97,9 +95,9 @@
 
     <EncoderProfile quality="high" fileFormat="3gp" duration="30">
       <Video codec="h264"
-             bitRate="20000000"
-             width="1920"
-             height="1080"
+             bitRate="8000000"
+             width="1280"
+             height="720"
              frameRate="30" />
 
       <Audio codec="aac"
@@ -160,19 +158,6 @@
              channels="2" />
     </EncoderProfile>
 
-    <EncoderProfile quality="1080p" fileFormat="3gp" duration="30">
-      <Video codec="h264"
-             bitRate="20000000"
-             width="1920"
-             height="1080"
-             frameRate="30" />
-
-      <Audio codec="aac"
-             bitRate="192000"
-             sampleRate="48000"
-             channels="2" />
-    </EncoderProfile>
-
     <EncoderProfile quality="timelapselow" fileFormat="3gp" duration="30">
       <Video codec="h264"
              bitRate="384000"
@@ -192,9 +177,9 @@
 
     <EncoderProfile quality="timelapsehigh" fileFormat="3gp" duration="30">
       <Video codec="h264"
-             bitRate="14000000"
-             width="1920"
-             height="1080"
+             bitRate="8000000"
+             width="1280"
+             height="720"
              frameRate="30" />
 
       <!--
@@ -263,23 +248,6 @@
              bitRate="8000000"
              width="1280"
              height="720"
-             frameRate="30" />
-
-      <!--
-            The Audio part of the profile will not be used since time lapse mode
-            does not capture audio
-      -->
-      <Audio codec="aac"
-             bitRate="192000"
-             sampleRate="48000"
-             channels="2" />
-    </EncoderProfile>
-
-    <EncoderProfile quality="timelapse1080p" fileFormat="3gp" duration="30">
-      <Video codec="h264"
-             bitRate="14000000"
-             width="1920"
-             height="1080"
              frameRate="30" />
 
       <!--
@@ -489,42 +457,6 @@
 
   </CamcorderProfiles>
 
-  <!-- Usb Camera -->
-  <CamcorderProfiles cameraId="2">
-
-    <EncoderProfile quality="low" fileFormat="3gp" duration="30">
-      <Video codec="h264"
-             bitRate="4000000"
-             width="640"
-             height="480"
-             frameRate="30" />
-
-      <Audio codec="aac"
-             bitRate="96000"
-             sampleRate="16000"
-             channels="2" />
-    </EncoderProfile>
-
-    <EncoderProfile quality="high" fileFormat="3gp" duration="30">
-      <Video codec="h264"
-             bitRate="8000000"
-             width="1280"
-             height="720"
-             frameRate="30" />
-
-      <Audio codec="aac"
-             bitRate="192000"
-             sampleRate="48000"
-             channels="2" />
-    </EncoderProfile>
-
-    <ImageEncoding quality="90" />
-    <ImageEncoding quality="80" />
-    <ImageEncoding quality="70" />
-    <ImageDecoding memCap="20000000" />
-
-  </CamcorderProfiles>
-
   <EncoderOutputFileFormat name="3gp" />
 
   <!--
@@ -533,22 +465,22 @@
          or query the capabilities of the codec at all if it is disabled
     -->
   <VideoEncoderCap name="h264" enabled="true"
-      minBitRate="64000" maxBitRate="20000000"
+      minBitRate="64000" maxBitRate="14000000"
       minFrameWidth="176" maxFrameWidth="1920"
-      minFrameHeight="144" maxFrameHeight="1080"
-      minFrameRate="1" maxFrameRate="60" />
+      minFrameHeight="144" maxFrameHeight="1088"
+      minFrameRate="1" maxFrameRate="30" />
 
   <VideoEncoderCap name="h263" enabled="true"
       minBitRate="64000" maxBitRate="8000000"
       minFrameWidth="176" maxFrameWidth="704"
       minFrameHeight="144" maxFrameHeight="576"
-      minFrameRate="1" maxFrameRate="60" />
+      minFrameRate="1" maxFrameRate="30" />
 
   <VideoEncoderCap name="m4v" enabled="true"
       minBitRate="64000" maxBitRate="10000000"
       minFrameWidth="176" maxFrameWidth="1280"
       minFrameHeight="144" maxFrameHeight="720"
-      minFrameRate="1" maxFrameRate="60" />
+      minFrameRate="1" maxFrameRate="30" />
 
   <AudioEncoderCap name="aac" enabled="true"
       minBitRate="8000" maxBitRate="320000"
@@ -558,7 +490,7 @@
   <AudioEncoderCap name="amrwb" enabled="true"
         minBitRate="6600" maxBitRate="23050"
         minSampleRate="16000" maxSampleRate="16000"
-        minChannels="1" maxChannels="2" />
+        minChannels="1" maxChannels="1" />
 
   <AudioEncoderCap name="amrnb" enabled="true"
       minBitRate="4750" maxBitRate="12200"
@@ -567,31 +499,28 @@
 
   <VideoDecoderCap name="wmv" enabled="true"/>
   <AudioDecoderCap name="wma" enabled="true"/>
-  <VideoEditorCap maxInputFrameWidth="1920"
-    maxInputFrameHeight="1080"
-    maxOutputFrameWidth="1920"
-    maxOutputFrameHeight="1080"
-    maxPrefetchYUVFrames="6" />
-  <!--
-      The VideoEditor Export codec profile and level values
-      correspond to the values in OMX_Video.h.
-      E.g. for h264, profile value 1 means OMX_VIDEO_AVCProfileBaseline
-      and  level 512 means OMX_VIDEO_AVCLevel31.
-      Please note that the values are in decimal.
-      These values are for video encoder.
-  -->
-  <!--
-      Codec = h.263, Baseline profile, level 30
-  -->
-  <ExportVideoProfile name="h263" profile="1"
-   level="4" />
-  <!--
+  <VideoEditorCap  maxInputFrameWidth="1920"
+        maxInputFrameHeight="1080" maxOutputFrameWidth="1920"
+        maxOutputFrameHeight="1080"
+        maxPrefetchYUVFrames="6" />
+    <!--
+        The VideoEditor Export codec profile and level values
+        correspond to the values in OMX_Video.h.
+        E.g. for h264, profile value 1 means OMX_VIDEO_AVCProfileBaseline
+        and  level 4096 means OMX_VIDEO_AVCLevel41.
+        Please note that the values are in decimal.
+        These values are for video encoder.
+    -->
+    <!--
       Codec = h.264, Baseline profile, level 4.1
-  -->
-  <ExportVideoProfile name="h264" profile="1"
-   level="4096" />
-  <!--
+    -->
+  <ExportVideoProfile name="h264" profile= "1" level="4096"/>
+    <!--
+      Codec = h.263, Baseline profile, level 4.1
+    -->
+  <ExportVideoProfile name="h263" profile= "1" level="4096"/>
+    <!--
       Codec = mpeg4, Simple profile, level 3
-  -->
+    -->
   <ExportVideoProfile name="m4v" profile= "1" level="16"/>
 </MediaSettings>

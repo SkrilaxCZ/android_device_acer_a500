@@ -1,7 +1,7 @@
 on boot
 # Set USB manufacturer and product name
     write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
-    write /sys/class/android_usb/android0/iProduct "Acer Iconia Tab A700"
+    write /sys/class/android_usb/android0/iProduct "Acer Iconia Tab A500"
 
 # Used to disable USB when switching states
 on property:sys.usb.config=none
@@ -13,7 +13,7 @@ on property:sys.usb.config=none
 on property:sys.usb.config=mtp,adb
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/idVendor 0502
-    write /sys/class/android_usb/android0/idProduct 3376
+    write /sys/class/android_usb/android0/idProduct 3325
     write /sys/class/android_usb/android0/functions $sys.usb.config
     write /sys/class/android_usb/android0/iSerial $ro.serialno
     write /sys/class/android_usb/android0/enable 1
@@ -23,7 +23,7 @@ on property:sys.usb.config=mtp,adb
 on property:sys.usb.config=mtp
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/idVendor 0502
-    write /sys/class/android_usb/android0/idProduct 3378
+    write /sys/class/android_usb/android0/idProduct 3341
     write /sys/class/android_usb/android0/functions $sys.usb.config
     write /sys/class/android_usb/android0/iSerial $ro.serialno
     write /sys/class/android_usb/android0/enable 1
@@ -51,7 +51,7 @@ on property:sys.usb.config=accessory,adb
 on property:sys.usb.config=ptp
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/idVendor 0502
-    write /sys/class/android_usb/android0/idProduct 3396
+    write /sys/class/android_usb/android0/idProduct 33b2
     write /sys/class/android_usb/android0/functions $sys.usb.config
     write /sys/class/android_usb/android0/iSerial $ro.serialno
     write /sys/class/android_usb/android0/enable 1
@@ -60,7 +60,7 @@ on property:sys.usb.config=ptp
 on property:sys.usb.config=ptp,adb
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/idVendor 0502
-    write /sys/class/android_usb/android0/idProduct 3395
+    write /sys/class/android_usb/android0/idProduct 33b1
     write /sys/class/android_usb/android0/functions $sys.usb.config
     write /sys/class/android_usb/android0/iSerial $ro.serialno
     write /sys/class/android_usb/android0/enable 1
