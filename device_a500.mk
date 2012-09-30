@@ -109,10 +109,14 @@ PRODUCT_PACKAGES := \
 
 PRODUCT_CHARACTERISTICS := tablet
 
-# media config xml file
+# Media config xml file
 PRODUCT_COPY_FILES += \
-    device/acer/a500/prebuilt/etc/media_profiles.xml:system/etc/media_profiles.xml \
-    device/acer/a500/prebuilt/etc/media_codecs.xml:system/etc/media_codecs.xml
+    $(LOCAL_PATH)/prebuilt/etc/media_profiles.xml:system/etc/media_profiles.xml \
+    $(LOCAL_PATH)/prebuilt/etc/media_codecs.xml:system/etc/media_codecs.xml
+
+# Mixer
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/prebuilt/etc/mixer_routes.xml:system/etc/mixer_routes.xml
 
 WIFI_BAND := 802_11_BG
 $(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4330/device-bcm.mk)
