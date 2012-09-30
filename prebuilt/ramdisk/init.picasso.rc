@@ -21,7 +21,6 @@ on early-init
     symlink /storage/sdcard1 /mnt/external_sd
     symlink /storage/usb0 /mnt/usb_storage
 
-
 on fs
     setprop ro.crypto.tmpfs_options size=128m,mode=0771,uid=1000,gid=1000
     setprop ro.crypto.umount_sd false
@@ -92,8 +91,8 @@ on boot
     chmod 666 /dev/nvhost-isp
     chmod 666 /dev/nvhost-mpe
     chmod 666 /dev/nvhost-vi
-    chown system system /sys/bus/iio/devices/device0/als_ir_mode
-    chown system system /sys/bus/iio/devices/device0/proximity_enable
+    chmod 664 /sys/bus/iio/devices/device0/lux
+    chmod 664 /sys/bus/iio/devices/device0/proxim_ir
 
 # Power management settings
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 216000

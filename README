@@ -147,3 +147,6 @@ index 95b0ec1..a374439 100644
    # 4.6.3 toolchain has many false positives as above
 -- 
 1.7.7
+
+(the patch is a hack). In BoardConfig.mk you may want to edit TARGET_KERNEL_CONFIG to
+update defconfig of the kernel (I use ezterry's). 
