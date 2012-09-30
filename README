@@ -1,0 +1,149 @@
+Acer A500 personal device repo:
+
+Personal changes include:
+
+=======================================================================================================================
+A) Using flexrom
+=======================================================================================================================
+In order not to use flexrom, edit fstab.picasso, and delete line:
+
+"/dev/block/mmcblk0p6  /system/vendor   ext4     ro                      wait"
+
+setup-makefiles.sh is modified to generate the makefiles based on vendor/acer/a500/proprietary directory contents.
+I myself have Acer widgets in flexrom (the big clock), you can also apply this patch to vendor/cm repo for flexrom support
+
+From d1a66bbc617db0bb785b6f76ed848955291358b2 Mon Sep 17 00:00:00 2001
+From: skrilaxcz <skrilax@gmail.com>
+Date: Mon, 13 Aug 2012 01:51:38 +0200
+Subject: [PATCH] Add flexrom support
+
+Change-Id: I3d6b3dda904651d7ec235e058e2f86b23da4c030
+---
+ tools/squisher |   38 ++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 38 insertions(+), 0 deletions(-)
+
+diff --git a/tools/squisher b/tools/squisher
+index e816b2a..00eb5a2 100755
+--- a/tools/squisher
++++ b/tools/squisher
+@@ -67,6 +67,44 @@ cd $REPACK/ota
+ rm -rf $REPACK/parallel
+ )
+ 
++# Flexrom (move /system/vendor to separate partition)
++
++mv $REPACK/ota/system/vendor $REPACK/ota/flexrom
++mkdir $REPACK/ota/system/vendor
++touch $REPACK/ota/system/vendor/placeholder
++
++# update updater-script and manifest accordingly
++UPDATER_SCRIPT=$REPACK/ota/META-INF/com/google/android/updater-script
++FLEXROM_PARTITION=`cat $OUT/recovery/root/etc/recovery.fstab | grep flexrom | awk '{print $3}'`
++
++printf "Creating flexrom in $FLEXROM_PARTITION..."
++
++$SED -i 's/\/system\/vendor/\/flexrom/g' $UPDATER_SCRIPT
++
++# fix flexrom mounting and extraction
++rm -f $UPDATER_SCRIPT.b
++touch $UPDATER_SCRIPT.b
++
++while read line; do
++	
++	if [ "$line" == "package_extract_dir(\"system\", \"/system\");" ]; then
++		echo "format(\"ext4\", \"EMMC\", \"$FLEXROM_PARTITION\", \"0\", \"/flexrom\");" >> $UPDATER_SCRIPT.b;
++		echo "mount(\"ext4\", \"EMMC\", \"$FLEXROM_PARTITION\", \"/flexrom\");" >> $UPDATER_SCRIPT.b;
++		echo "$line" >> $UPDATER_SCRIPT.b;
++		echo "package_extract_dir(\"flexrom\", \"/flexrom\");" >> $UPDATER_SCRIPT.b;
++		
++	else
++		echo "$line" >> $UPDATER_SCRIPT.b;
++	fi
++	
++done < $UPDATER_SCRIPT
++
++echo "unmount(\"/flexrom\");" >> $UPDATER_SCRIPT.b;
++rm -f $UPDATER_SCRIPT
++mv $UPDATER_SCRIPT.b $UPDATER_SCRIPT
++echo
++
+ # Fix build.prop
+ $SED -i \
+ 	-e '/ro\.kernel\.android\.checkjni/d' \
+-- 
+1.7.7
+
+=======================================================================================================================
+B) Odex files generation
+=======================================================================================================================
+
+If you do not wish to generate odexed build (for size etc.) remove the "WITH_DEXPREOPT := true" from BoardConfig.mk
+
+C) Modified init script (includes more proprietary things)
+=======================================================================================================================
+
+The ending part of init.picasso.rc requires additional proprietary files from Acer ICS build, you don't need these however.
+If you do not wish to use tf_daemon / nvcpud, remove this from the script (at the very bottom)
+
+===
+#Prepare TF service
+service tf_daemon /system/bin/tf_daemon -storageDir /data/tf -d
+    disabled
+    class main
+    user root
+    group shell
+    oneshot
+
+#Create data directory and start service
+on property:tf.enable=y
+    mkdir /data/tf
+    start tf_daemon
+
+# Enable NvCpuD, and set it to never poll config again
+on boot
+    setprop nvcpud.enabled true
+    setprop nvcpud.refresh_ms -1
+
+service nvcpud /system/bin/nvcpud
+    class main
+    user root
+    group root
+===
+
+D) Changes to kernel
+=======================================================================================================================
+
+To build kernel, you'll need a patch like this:
+
+From 2d2455013e920ad6b00be97e10e733c044f25614 Mon Sep 17 00:00:00 2001
+From: skrilaxcz <skrilax@gmail.com>
+Date: Sun, 12 Aug 2012 23:21:04 +0200
+Subject: [PATCH] Fixed build on CM10 toolchain
+
+---
+ drivers/net/wireless/bcm4329/Makefile |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/bcm4329/Makefile b/drivers/net/wireless/bcm4329/Makefile
+index 95b0ec1..a374439 100644
+--- a/drivers/net/wireless/bcm4329/Makefile
++++ b/drivers/net/wireless/bcm4329/Makefile
+@@ -32,14 +32,14 @@ else
+ DHDCFLAGS += -DSDIO_ISR_THREAD
+ endif
+ 
+-ifeq ($(TARGET_USE_NEW_TOOLCHAIN),1)
++#ifeq ($(TARGET_USE_NEW_TOOLCHAIN),1)
+   # gcc-4.6.1 warns a lot more than previous compilers.
+   # The following is the minimal set of warnings that need to not error out
+   # the build for it to succeed. -Wno-error would also work, but this
+   # explicit list allows them to be fixed in smaller chunks.
+   DHDCFLAGS += -Wno-error=unused-but-set-variable
+   DHDCFLAGS += -Wno-error=array-bounds
+-endif
++#endif
+ 
+ ifeq "$(shell $(CC) --version | grep gcc | sed 's/^.* //g')" "4.6.3"
+   # 4.6.3 toolchain has many false positives as above
+-- 
+1.7.7
