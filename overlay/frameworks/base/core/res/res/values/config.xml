@@ -153,5 +153,8 @@
     <!-- When a database query is executed, the results retuned are paginated
          in pages of size (in KB) indicated by this value -->
     <integer name="config_cursorWindowSize">2048</integer>
+
+    <!-- Setting to false will disable CM's IME switcher implementation for tablets -->
+    <bool name="config_show_cmIMESwitcher">false</bool>
     
 </resources>
