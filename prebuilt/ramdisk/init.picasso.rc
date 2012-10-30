@@ -226,7 +226,7 @@ on property:tf.enable=y
     mkdir /data/tf
     start tf_daemon
 
-# Enable NvCpuD, and set it to never poll config again
+#Enable NvCpuD, and set it to never poll config again
 on boot
     setprop nvcpud.enabled true
     setprop nvcpud.refresh_ms -1
