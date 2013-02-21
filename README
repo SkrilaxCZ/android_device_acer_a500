@@ -79,6 +79,7 @@ B) Odex files generation
 
 If you do not wish to generate odexed build (for size etc.) remove the "WITH_DEXPREOPT := true" from BoardConfig.mk
 
+=======================================================================================================================
 C) Modified init script (includes more proprietary things)
 =======================================================================================================================
 
@@ -108,8 +109,8 @@ service nvcpud /system/bin/nvcpud
     class main
     user root
     group root
-===
 
+=======================================================================================================================
 D) Changes to kernel
 =======================================================================================================================
 
@@ -149,4 +150,10 @@ index 95b0ec1..a374439 100644
 1.7.7
 
 (the patch is a hack). In BoardConfig.mk you may want to edit TARGET_KERNEL_CONFIG to
-update defconfig of the kernel (I use ezterry's). 
+update defconfig of the kernel (I use ezterry's).
+
+=======================================================================================================================
+E) Build system
+=======================================================================================================================
+
+You will need to toggle TARGET_NO_RECOVERY to false, unless you wish to patch fstab generation.
